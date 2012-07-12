@@ -2,9 +2,13 @@ from google.appengine.ext import db
 
 class Publisher(db.Model):
     name = db.StringProperty()
+    def __unicode__(self):
+        return self.name
 
 class Category(db.Model):
     name = db.StringProperty()
+    def __unicode__(self):
+        return self.name
 
 class PublisherCategory(db.Model):
     publisher = db.ReferenceProperty(Publisher)
@@ -26,3 +30,6 @@ class Item(db.Model):
 
     def to_dict(self):
         return dict([(i, unicode(getattr(self, i))) for i in self.properties()])
+
+    def __unicode__(self):
+        return self.title
