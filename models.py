@@ -22,6 +22,9 @@ class Item(db.Model):
     link = db.StringProperty()
     content = db.TextProperty()
 
+    published = db.DateTimeProperty()
+    updated = db.DateTimeProperty()
+
     created = db.DateTimeProperty(auto_now_add=True)
     modified = db.DateTimeProperty(auto_now_add=True)
 
