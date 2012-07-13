@@ -10,7 +10,7 @@ class UpdateHandler(webapp2.RequestHandler):
         feeds = PublisherCategory.all()
         for feed in feeds:
             d = feedparser.parse(feed.feed_url)
-            for entry in d.entries[:15]:
+            for entry in d.entries:
                 q = Item.gql(
                     'WHERE link = :link AND published = :published',
                     link = cgi.escape(entry.link),
