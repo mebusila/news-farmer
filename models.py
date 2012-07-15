@@ -12,21 +12,25 @@ class Category(db.Model):
 
 class PublisherCategory(db.Model):
     publisher = db.ReferenceProperty(Publisher)
-    category = db.ReferenceProperty(Category)
+    category  = db.ReferenceProperty(Category)
 
-    enabled = True
-    feed_url = db.StringProperty()
+    enabled   = True
+    feed_url  = db.StringProperty()
+    feed_type = db.StringProperty(choices=set(["RSS", "ATOM"]), default="RSS")
 
 class Item(db.Model):
-    title = db.StringProperty()
-    link = db.StringProperty()
-    content = db.TextProperty()
+    title       = db.StringProperty()
+    link        = db.StringProperty()
+    content     = db.TextProperty()
+    content_md5 = db.StringProperty()
 
-    created = db.DateTimeProperty(auto_now_add=True)
-    modified = db.DateTimeProperty(auto_now_add=True)
+    published   = db.DateTimeProperty()
+    updated     = db.DateTimeProperty()
 
-    publisher = db.ReferenceProperty(Publisher)
-    category = db.ReferenceProperty(Category)
+    created     = db.DateTimeProperty(auto_now_add=True)
+
+    publisher   = db.ReferenceProperty(Publisher)
+    category    = db.ReferenceProperty(Category)
 
     def to_dict(self):
         return dict([(i, unicode(getattr(self, i))) for i in self.properties()])
