@@ -1,4 +1,4 @@
 cron:
 - description: hourly rss updates
   url: /update
-  schedule: every 1 hours from 08:00 to 20:00
+  schedule: every 3 hours from 06:00 to 19:00

@@ -31,7 +31,7 @@ class MainHandler(webapp2.RequestHandler):
             page = 0
 
         q = Item.all()
-        q.order('-created')
+        q.order('-updated')
         items = q.fetch(limit)
 
         self.response.headers['Content-Type'] = 'application/json'
