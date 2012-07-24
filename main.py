@@ -17,9 +17,14 @@
 import webapp2
 import json
 from models import *
+import logging
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+
+        q = Item.all()
+        q.order('-updated')
+
         try:
             limit = int(self.request.get('limit'))
         except :
@@ -30,17 +35,39 @@ class MainHandler(webapp2.RequestHandler):
         except:
             page = 0
 
-        q = Item.all()
-        q.order('-updated')
+        filters = []
+
+        if self.request.get('categories') != '':
+            categories = db.GqlQuery(
+                'SELECT * FROM Category WHERE name IN :1',
+                self.request.get('categories').split(',')
+            )
+            if categories.count() > 0:
+                filters.append(
+                    {'categories': [category.to_dict() for category in categories]}
+                )
+                q.filter('category IN', [category.key() for category in categories])
+
+        if self.request.get('publishers') != '':
+            publishers = db.GqlQuery(
+                'SELECT * FROM Publisher WHERE name IN :1',
+                self.request.get('publishers').split(',')
+            )
+            if publishers.count() > 0:
+                filters.append(
+                        {'publishers': [publisher.to_dict() for publisher in publishers]}
+                )
+                q.filter('publisher IN', [publisher.key() for publisher in publishers])
+
         items = q.fetch(limit)
 
         self.response.headers['Content-Type'] = 'application/json'
         data = {
-            'total' : q.count(),
-            'limit' : limit,
-            'page'  : page,
-            'query' : '',
-            'items' : [item.to_dict() for item in items]
+            'total'     : q.count(),
+            'limit'     : limit,
+            'page'      : page,
+            'filters'   : filters,
+            'items'     : [item.to_dict() for item in items]
         }
         self.response.out.write(
             json.dumps(

@@ -5,15 +5,13 @@ import cgi
 from time import mktime
 from datetime import datetime
 import hashlib
-import logging
 
 class UpdateHandler(webapp2.RequestHandler):
     def parseRss(self, feed):
-        logging.info("hier")
         d = feedparser.parse(feed.feed_url)
         for entry in d.entries:
             m = hashlib.md5()
-            m.update(cgi.escape(entry.description))
+            m.update(cgi.escape(entry.description.encode('utf-8')))
             md5_hash = m.hexdigest()
             q = Item.gql(
                 'WHERE link = :link AND published = :published',
@@ -45,5 +43,4 @@ class UpdateHandler(webapp2.RequestHandler):
             if feed.feed_type == "RSS":
                 self.parseRss(feed)
 
-app = webapp2.WSGIApplication([('/update', UpdateHandler)],
-                              debug=True)
+app = webapp2.WSGIApplication([('/update', UpdateHandler)], debug=True)
