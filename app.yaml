@@ -15,6 +15,9 @@ handlers:
 - url: /categories.*
   script: categories.app
 
+- url: /publishers.*
+  script: publishers.app
+
 - url: /.*
   script: main.app
 

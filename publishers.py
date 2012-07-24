@@ -2,7 +2,7 @@ import webapp2
 from models import *
 import json
 
-class CategoriesHandler(webapp2.RequestHandler):
+class PublishersHandler(webapp2.RequestHandler):
     def get(self):
         try:
             limit = int(self.request.get('limit'))
@@ -10,24 +10,24 @@ class CategoriesHandler(webapp2.RequestHandler):
             limit = 10000
 
         items = PublisherCategory.all().fetch(limit)
-        categories = []
+        publishers = []
         for item in items:
             add = True
-            for category in categories:
-                if category.key() == item.category.key():
+            for publisher in publishers:
+                if publisher.key() == item.publisher.key():
                     add = False
                     break
 
             if(add):
-                categories.append(
-                    item.category
+                publishers.append(
+                    item.publisher
                 )
 
         self.response.write(
             json.dumps(
-                [category.to_dict() for category in categories]
+                [publisher.to_dict() for publisher in publishers]
             )
         )
 
-app = webapp2.WSGIApplication([('/categories', CategoriesHandler)],
+app = webapp2.WSGIApplication([('/publishers', PublishersHandler)],
     debug=True)
